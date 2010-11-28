@@ -1,0 +1,4 @@
+cron:
+-   description: cron job for rdr2twt
+    url: /cron
+    schedule: every 5 minutes
