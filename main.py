@@ -50,8 +50,10 @@ class CronHandler(webapp.RequestHandler):
 		old_timestamp = self.getTimestamp()
 
 		logging.debug("old timestamp: %s" % (old_timestamp))
-
-		for item in items:
+		
+		entries = items[::-1];
+		
+		for item in entries:
 
 			timestamp = int(item.get("{http://www.google.com/schemas/reader/atom/}crawl-timestamp-msec"))
 
@@ -60,6 +62,8 @@ class CronHandler(webapp.RequestHandler):
 				self.post(item)
 				
 				self.setTimestamp(timestamp)
+				
+				logging.debug("new timestamp: %s" % (timestamp))
 	
 	def post(self, item):
 
@@ -74,8 +78,6 @@ class CronHandler(webapp.RequestHandler):
 		logging.debug("facebook post url: %s" % (feedUrl))
 	
 		result = urlfetch.fetch(feedUrl)
-
-		logging.debug("result: %s" % (result))
 
 	def getTimestamp(self):	
 		
