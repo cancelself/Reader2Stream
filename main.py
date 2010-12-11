@@ -28,8 +28,13 @@ class MainHandler(webapp.RequestHandler):
 			data = CronData.all();
 
 			if data.count() == 0:
-                        	data = CronData(lastUpdate=1285565492906,accessToken=access_token)
+                        	data = CronData(lastUpdate=1292009338793,accessToken=access_token)
                         	data.put()
+
+			if data.count() > 0:
+				lastUpdate = data[0].lastUpdate
+				data[0] = CronData(lastUpdate=lastUpdate,accessToken=access_token)
+				data.put()
 
 			self.response.out.write(access_token)
 
