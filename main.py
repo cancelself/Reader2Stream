@@ -24,7 +24,7 @@ class MainHandler(webapp.RequestHandler):
 			
 		else:
 			
-			token_url = "https://graph.facebook.com/oauth/access_token?client_id=174071129287513&redirect_uri=http://rdr2twt.appspot.com/&client_secret=1943a6ba44874f3a02ea6a5f44e2e037&code=" + code
+			token_url = "https://graph.facebook.com/oauth/access_token?client_id=174071129287513&redirect_uri=http://rdr2twt.appspot.com/&client_secret=&code=" + code
 
 			result = urlfetch.fetch(token_url)
 
