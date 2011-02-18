@@ -9,34 +9,52 @@ from google.appengine.ext import webapp
 from google.appengine.api import urlfetch
 from xml.etree import ElementTree
 from google.appengine.ext import db
+from django.utils import simplejson
 
 class MainHandler(webapp.RequestHandler):
 
 	def get(self):
+		
 		code = self.request.get("code",default_value="")
 	
 		if len(code) ==  0:
+			
 			oauth_url = "https://graph.facebook.com/oauth/authorize?client_id=174071129287513&redirect_uri=http://rdr2twt.appspot.com/&scope=publish_stream,offline_access"
 			self.redirect(oauth_url)
+			
 		else:
+			
 			token_url = "https://graph.facebook.com/oauth/access_token?client_id=174071129287513&redirect_uri=http://rdr2twt.appspot.com/&client_secret=1943a6ba44874f3a02ea6a5f44e2e037&code=" + code
 
 			result = urlfetch.fetch(token_url)
 
 			access_token = result.content
+			
+			meUrl = "https://graph.facebook.com/me?%s" % (access_token) 
 
-			data = CronData.all();
+			me = urlfetch.fetch(meUrl).content;
+			
+			me = simplejson.loads(me)
+			
+			if me['id'] =="548517159":
 
-			if data.count() == 0:
-                        	data = CronData(lastUpdate=1292009338793,accessToken=access_token)
-                        	data.put()
+				data = CronData.all();
 
-			if data.count() > 0:
-				lastUpdate = data[0].lastUpdate
-				data[0] = CronData(lastUpdate=lastUpdate,accessToken=access_token)
-				data.put()
+				if data.count() == 0:
+	                        	data = CronData(lastUpdate=1292009338793,accessToken=access_token)
+	                        	data.put()
 
-			self.response.out.write(access_token)
+				if data.count() > 0:
+					lastUpdate = data[0].lastUpdate
+					data[0] = CronData(lastUpdate=lastUpdate,accessToken=access_token)
+					data.put()
+
+				self.response.out.write(access_token)
+			
+			else:
+			
+				self.response.out.write("This app is only for Doug Purdy.  Send him a message if you want to use it.");
+		
 
 class CronData(db.Model):
 	lastUpdate = db.IntegerProperty();
